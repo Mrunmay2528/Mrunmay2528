@@ -1,0 +1,45 @@
+clc; 
+clear all; 
+ 
+z0 = 500; 
+x0 = 0; 
+Va = 60; 
+g = 9.81; 
+n = 1.6; 
+a = -2.28;
+R = Va^2/(g*(n-1)) 
+w = g*(n-1)/Va 
+z1 = 150 
+theta = acos(1-z1/R) 
+ta = (z0 - z1)/(Va*sin(theta)) 
+xa = x0 + ta*Va*cos(theta) 
+tr = theta/w 
+xr = R*sin(theta) 
+tg = -Va/a 
+t = 0:(ta+tr+tg);
+t = 0:(ta+tr+tg); 
+for i = 1:numel(t) 
+    if (t(i)<=ta)
+        x(i) = x0 + t(i)*Va*cos(theta); 
+        z(i) = z0 - t(i)*Va*sin(theta);
+    else
+        if (t(i)<=(ta+tr)) 
+            x(i) = xa + R*(sin(theta)-sin(theta-w*(t(i)-ta))); 
+            z(i) = R*(1-cos(theta-w*(t(i)-ta))); 
+        else 
+
+            x(i) = xa + xr + Va*(t(i)-(ta+tr)) + 0.5*a*(t(i)-(ta+tr))^2; 
+            z(i) = 0; 
+        end
+        
+    end 
+
+end 
+plot(x(i),z(i),'*') 
+axis ([0 2000 0 2000]) 
+pause(0.1) 
+plot(x,z) 
+axis ([0 2000 0 2000]) 
+title('Landing Trajectory') 
+xlabel('Range') 
+ylabel('Altitude') 
