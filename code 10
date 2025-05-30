@@ -1,0 +1,38 @@
+clc; 
+
+mass = 5000;  
+wingArea = 25;  
+wingSpan = 10;  
+wingChord = wingArea / wingSpan; 
+incidenceAngle = 0; % Wing incidence angle (degrees) 
+liftCurveSlope = 0.1; % Lift curve slope (per radian) 
+cgPosition = 0.3;
+rho = 1.225; % Air density (kg/m^3) 
+g = 9.81;
+% Simulation parameters 
+alpha = -10:0.1:20; % Angle of attack range (degrees) 
+staticMarginRange = -0.2:0.05:0.2;
+for i = 1:length(staticMarginRange) 
+    staticMargin = staticMarginRange(i) * wingChord; 
+    neutralPoint = cgPosition * wingChord + staticMargin; 
+    for j = 1:length(alpha)
+        aerodynamicCenter=neutralPoint-(liftCurveSlope/(2 * pi))*wingChord; 
+        cm=-(cgPosition-aerodynamicCenter)*liftCurveSlope*(alpha(j)-incidenceAngle);
+        cl = liftCurveSlope * (alpha(j) - incidenceAngle); 
+        lift = 0.5 * rho * wingArea * cl; 
+        moment = 0.5 * rho * wingArea * wingChord * cm; 
+        weight = mass * g;
+        if lift < weight 
+            fprintf('Stall occurred at alpha = %.2f degrees, static margin = %.2f meters.\n', alpha(j), staticMargin);
+        end
+    end
+end
+weight = 5000; % Aircraft weight (in kilograms) 
+meanAerodynamicChord = 2.5; % Mean aerodynamic chord (in meters)  
+staticMargin = -0.1:0.05:0.1; % Static margin range (-0.1 to 0.1) 
+stallSpeed = sqrt((2 * weight) ./ (1.225 * wingArea * (meanAerodynamicChord * (1 + staticMargin)))); 
+plot(staticMargin, stallSpeed, 'b-o');
+xlabel('Static Margin'); 
+ylabel('Stall Speed (m/s)'); 
+title('Effect of Static Margin on Stall Speed'); 
+grid on 
