@@ -1,0 +1,27 @@
+clc; 
+clear all; 
+ 
+x0=0; 
+y0=50; 
+v0=20; 
+ 
+g=9.81; 
+b=0; 
+a=-g/2; 
+c=y0; 
+t_flight=(-b-sqrt(b^2-4*a*c))/(2*a) 
+
+t=linspace(0,t_flight,50);
+for i=1:numel(t) 
+
+    x(i)=(v0*t(i))+x0; 
+    y(i)=y0-(g/2)*t(i).^2; 
+    plot(x(i),y(i),'*'); 
+    axis ([0 70 0 50]) 
+    drawnow(); 
+    pause(0.03);
+end 
+plot(x,y) 
+xlabel('Distance '); 
+ylabel('Height '); 
+title('Bomb Drop Trajectory ')
